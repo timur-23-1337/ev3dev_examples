@@ -503,20 +503,27 @@ while True:
     ev3.light.on(Color.GREEN)
     #--------------------------------------------------------------------------
     if no_add == 0:
-        if not (additional1.angle() == curr_angle):
-            mbox.send('set_angle1')
-            wait(50)
-            stats.send(additional1.angle())
-            wait(50)
-            curr_angle = additional1.angle()
-            additional1.reset_angle(curr_angle)
+        if (additional1.angle() > 0):
+            mbox.send('add1_pos')
+            ev3.screen.print('add1_pos sent!', sep='', end='\n')
+            wait(100)
+            additional1.reset_angle(0)
+        elif (additional1.angle() < 0):
+            mbox.send('add1_neg')
+            ev3.screen.print('add1_neg sent!', sep='', end='\n')
+            wait(100)
+            additional1.reset_angle(0)
         elif double == 1:
-            if not (additional2.angle() == curr_angle):
-                mbox.send('set_angle2')
-                wait(50)
-                stats.send(additional2.angle())
-                wait(50)
-                curr_angle = additional2.angle()
+            if (additional2.angle() > 0):
+                mbox.send('add2_pos')
+                ev3.screen.print('add2_pos sent!', sep='', end='\n')
+                wait(100)
+                additional2.reset_angle(0)
+            elif (additional2.angle() < 0):
+                mbox.send('add2_neg')
+                ev3.screen.print('add2_neg sent!', sep='', end='\n')
+                wait(100)
+                additional2.reset_angle(0)
     #--------------------------------------------------------------------------
     if Button.CENTER in ev3.buttons.pressed():
         mbox.send('center')
@@ -535,8 +542,6 @@ while True:
                     mode = 1
                     is_break = 0
                     break
-                else:
-                    is_break = 0
                 if speed <= -1500.0:
                     speed = -1500.0
                 elif speed >= 1500.0:
@@ -660,8 +665,8 @@ while True:
                         option = option + 1
                     elif Button.CENTER in ev3.buttons.pressed():
                         ev3.light.on(Color.GREEN)
-                        wait(50)
                         mbox.send('exit')
+                        wait(50)
                         is_break = 1
     #--------------------------------------------------------------------------
     if not ev3.buttons.pressed():
