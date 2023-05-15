@@ -15,7 +15,7 @@ server = BluetoothMailboxServer()
 mbox = TextMailbox('com',server)
 stats = NumericMailbox('num',server)
 #--------------------------------------------------------------------------
-add_mtrs = is_break = angle = curr_angle = ignore = mode = 0
+add_mtrs = is_break = angle = curr_angle = ignore = 0
 speed, turn = 500.0, 70.0
 #--------------------------------------------------------------------------
 ev3.screen.print('Waiting for connection...', sep=' ', end='\n')
@@ -94,39 +94,35 @@ while True:
     if command == 'center':
         while True:
             #--------------------------------------------------------------------------
-            if is_break == 1:
-                is_break = 0
-                break
-            #--------------------------------------------------------------------------
             robot.stop()
             ev3.light.on(Color.RED)
-            mbox.wait()
+            mbox.wait_new()
             command = mbox.read()
             #--------------------------------------------------------------------------
-            if command == 'set_speeds':
+            if command == 'exit':
+                break
+            elif command == 'set_speeds':
                 stats.wait()
                 set_speed = stats.read()
                 speed = set_speed
                 stats.wait()
                 set_turn = stats.read()
                 turn = set_turn
-            if command == 'exit':
-                is_break = 1
-            if command == 'shutdown':
+            elif command == 'shutdown':
                 quit()
     #--------------------------------------------------------------------------
     if command == 'none':
         robot.stop()
         continue
     #--------------------------------------------------------------------------
-    elif command == 'set_angle1':
-        stats.wait_new()
-        angle = stats.read()
-        additional1.run_target(1000, angle, then=Stop.HOLD, wait=True)
-    elif command == 'set_angle2':
-        stats.wait()
-        angle = stats.read()
-        additional2.run_target(1000, angle, then=Stop.HOLD, wait=True)
+    elif command == 'add1_pos':
+        additional1.run_time(speed,200,then=Stop.COAST,wait=False)  
+    elif command == 'add2_pos':
+        additional2.run_time(speed,200,then=Stop.COAST,wait=False) 
+    elif command == 'add1_neg':
+        additional1.run_time(-speed,200,then=Stop.COAST,wait=False)  
+    elif command == 'add2_neg':
+        additional2.run_time(-speed,200,then=Stop.COAST,wait=False) 
     #--------------------------------------------------------------------------
     elif command == 'left_up':
         robot.drive(speed, turn)
