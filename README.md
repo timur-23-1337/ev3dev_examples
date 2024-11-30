@@ -5,3 +5,4 @@ Currently available:
 - EV3 Remote control, using 2 EV3 bricks
 - Painter program
 - Sumo program
+- Line follower program (with PID)
